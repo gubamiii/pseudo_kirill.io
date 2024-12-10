@@ -1,9 +1,10 @@
-from pynput import keyboard
-from pynput.keyboard import Controller
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 
-keyboard_controller = Controller()
+app = Flask(__name__)  
+CORS(app)
 
-# Словарь замен
+
 replacements = {
     'а': 'a', 'б': '6', 'в': 'ß', 'г': 'g', 'д': 'd',
     'е': 'e', 'ё': 'ë', 'ж': 'ж', 'з': '3', 'и': 'u',
@@ -14,20 +15,28 @@ replacements = {
     'э': 'e', 'ю': 'ю', 'я': 'я'
 }
 
-def on_press(key):
-    try:
-        if hasattr(key, 'char') and key.char in replacements:
-            keyboard_controller.press(keyboard.Key.backspace)
-            keyboard_controller.release(keyboard.Key.backspace)
-            keyboard_controller.type(replacements[key.char])
+def convert_text(text):
+    """Функция конвертации из оригинального скрипта"""
+    return ''.join(replacements.get(char, char) if char.lower() == char 
+                  else char for char in text)
 
-    except Exception as e:
-        pass 
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-def on_release(key):
-    if key == keyboard.Key.esc:
-        print("Завершение программы.")
-        return False
+@app.route('/convert', methods=['POST'])
+def convert():
+    text = request.json.get('text', '')
+    converted = convert_text(text)
+    return jsonify({'result': converted})
 
-with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
+
+@app.route('/convert_keypress', methods=['POST'])
+def convert_keypress():
+    key = request.json.get('key', '')
+    if key in replacements:
+        return jsonify({'result': replacements[key]})
+    return jsonify({'result': key})
+
+if __name__ == '__main__':
+    app.run(debug=True)
