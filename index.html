@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pseudo Kirill Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="matrix-bg" class="matrix-bg"></div>
+    <div class="content">
+        <h1>Pseudo Kirill Converter</h1>
+        <textarea id="input" placeholder="Введите текст на русском..."></textarea>
+        <div class="result" id="output"></div>
+    </div>
+
+    <script>
+        const replacements = {
+            'а': 'a', 'б': '6', 'в': 'ß', 'г': 'g', 'д': 'd',
+            'е': 'e', 'ё': 'ë', 'ж': 'ж', 'з': '3', 'и': 'u',
+            'й': 'ũ', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'H',
+            'о': 'o', 'п': 'n', 'р': 'p', 'с': 'c', 'т': 'т',
+            'у': 'y', 'ф': 'f', 'х': 'x', 'ц': 'ц', 'ч': '4',
+            'ш': 'w', 'щ': 'w', 'ъ': "'", 'ы': 'bI', 'ь': 'b',
+            'э': 'e', 'ю': 'ю', 'я': 'я'
+        };
+
+        document.getElementById('input').addEventListener('input', function() {
+            const text = this.value;
+            const converted = text.split('').map(char => {
+                if (char.toLowerCase() === char) {
+                    return replacements[char] || char;
+                }
+                return char;
+            }).join('');
+            document.getElementById('output').textContent = converted;
+        });
+
+        function createSymbol() {
+            const symbol = document.createElement('div');
+            symbol.className = 'symbol';
+            
+            const symbols = Object.values(replacements);
+            symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            symbol.style.left = Math.random() * 100 + 'vw';
+            
+            const duration = 5 + Math.random() * 5;
+            symbol.style.animationDuration = duration + 's';
+            
+            document.getElementById('matrix-bg').appendChild(symbol);
+            
+            setTimeout(() => {
+                symbol.remove();
+            }, duration * 1000);
+        }
+
+        setInterval(createSymbol, 100);
+    </script>
+</body>
+</html>
