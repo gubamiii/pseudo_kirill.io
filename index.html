@@ -3,6 +3,33 @@
 <head>
     <title>Pseudo Kirill Converter</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            textarea {
+                height: 100px;
+            }
+
+            .result {
+                min-height: 30px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .symbol {
+                font-size: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="matrix-bg" class="matrix-bg"></div>
@@ -42,6 +69,9 @@
             symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
             
             symbol.style.left = Math.random() * 100 + 'vw';
+            
+            const fontSize = 10 + Math.random() * 18;
+            symbol.style.fontSize = fontSize + 'px';
             
             const duration = 5 + Math.random() * 5;
             symbol.style.animationDuration = duration + 's';
